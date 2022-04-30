@@ -195,5 +195,12 @@ float Magnetometer::calibrate(Vec3 mag, float gain) {
     center.y += 4 * gain * f * mag.y;
     center.z += 4 * gain * f * mag.z;
     radius   += 4 * gain * f * radius;
+    if (f > 1E30) resetCalibration();
     return f;
+}
+void Magnetometer::resetCalibration() {
+  center.x = 0;
+  center.y = 0;
+  center.z = 0;
+  radius = 10;
 }

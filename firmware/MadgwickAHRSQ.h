@@ -17,6 +17,7 @@
 #ifndef MadgwickAHRS_h
 #define MadgwickAHRS_h
 #include <math.h>
+#include "Algebra.h"
 
 //--------------------------------------------------------------------------------------------
 // Variable declaration
@@ -71,11 +72,10 @@ public:
         return yaw;
     }
 
-    void getQuaternion(float q[4]) {
-      q[0] = q0;
-      q[1] = q1;
-      q[2] = q2;
-      q[3] = q3;
+    Quaternion getQuaternion() {
+        // float norm = sqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
+        // return Quaternion(q0 / norm, q1 / norm, q2 / norm, q3 / norm);
+        return Quaternion(q0, q1, q2, q3);
     }
 };
 #endif

@@ -1,6 +1,7 @@
 
 #include <Arduino.h>
 #include <Wire.h>
+#include "Algebra.h"
 
 #ifndef BMX055_h
 #define BMX055_h
@@ -8,12 +9,6 @@
 #define Addr_Accl_Def 0x18
 #define Addr_Gyro_Def 0x68
 #define Addr_Mag_Def  0x10
-
-struct Vec3 {
-    float x;
-    float y;
-    float z;
-};
 
 enum AcclRange: uint8_t {
     PM2G = 2,
@@ -69,8 +64,7 @@ public:
 
     Vec3 read();
     float calibrate(Vec3 mag, float gain = 0.0001);
-
-private:
+    void resetCalibration();
 };
 
 

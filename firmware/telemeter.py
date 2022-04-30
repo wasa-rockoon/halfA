@@ -1,5 +1,7 @@
 import os
 import sys
+import datetime
+import csv
 import serial
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,6 +19,13 @@ def main():
     port = sys.argv[1]
 
     s = serial.Serial(port, 9600)
+
+
+    filename = datetime.datetime.now().strftime('%Y%m%d_%H%M%S') + '.csv'
+    f = open(filename, 'w')
+    writer = csv.writer(f)
+    writer.writerow(['T', 'accl_x', 'accl_y', 'accl_z', 'quat_0', 'quat_1', 'quat_2', 'quat_3', 'altitude', 'battery'])
+
 
     fig = plt.figure()
     ax = fig.add_subplot(2, 1, 1, projection='3d')
@@ -100,9 +109,13 @@ def main():
                 ps = seconds
                 seconds = value / 1000.0
                 freq = 1.0 / (seconds - ps)
+
                 hs.append(alt)
                 ts.append(seconds)
-                # bx.scatter(seconds, alt)
+
+                writer.writerow([ps, accl[0], accl[1], accl[2], quat[0], quat[1], quat[2], quat[3], alt, bat])
+
+
             elif label == 'X':
                 accl[0] = value
             elif label == 'Y':
@@ -111,25 +124,25 @@ def main():
                 accl[2] = value
 
             elif label == 'p':
-                quat[3] = value
-            elif label == 'q':
                 quat[0] = value
-            elif label == 'r':
+            elif label == 'q':
                 quat[1] = value
-            elif label == 's':
+            elif label == 'r':
                 quat[2] = value
+            elif label == 's':
+                quat[3] = value
 
             elif label == 'A':
                 if init_alt is None:
                     init_alt = value
-                alt = value - init_alt
+                alt = round(value - init_alt, 5)
                 if alt > alt_max:
                     alt_max = alt
 
-            elif label == 'V':
+            elif label == 'B':
                 bat = value
 
-            
+
 
         rot = Rotation.from_quat(quat)
         axisX = rot.apply([-1, 0, 0])
@@ -187,6 +200,8 @@ def main():
     plt.show()
 
     s.close()
+
+    f.close()
 
 
 if __name__ == "__main__":

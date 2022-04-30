@@ -2,4 +2,6 @@ eagle.epf
 *.b#*
 *.s#*
 
+log
+
 .DS_Store
