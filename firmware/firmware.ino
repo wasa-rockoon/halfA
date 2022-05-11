@@ -4,7 +4,7 @@
 #include <Wire.h>
 #include <SoftwareSerial.h>
 #include <EEPROM.h>
-#include <BMP280.h>
+#include "BMP280.h"
 #include "Algebra.h"
 #include "MadgwickAHRSQ.h"
 #include "BMX055.h"
@@ -131,7 +131,7 @@ void setup() {
 #endif
 
   bmp280.begin();
-  bmp280.setOversampling(4);
+  bmp280.setOversampling(1);
 
   bmx055.begin(Addr_Accl, Addr_Gyro, Addr_Mag);
   bmx055.Accl.setRange(PM16G);
@@ -206,6 +206,10 @@ void loop() {
     if(result!=0)
         altitude = bmp280.altitude(P,P0);
   }
+
+  char buf[64];
+  sprintf(buf, "%c %f %f %f", result, T, P,  altitude);
+  Serial.println(buf);
 
   battery_voltage = analogRead(BAT_VOLTAGE_PIN) * 6.6 / 1023.0;
 
